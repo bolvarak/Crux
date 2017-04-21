@@ -13,7 +13,7 @@ namespace Crux\Core;
 use Crux\Collection;
 use Crux\Type\Variant;
 use Crux\Type\VariantList;
-use Crux\Type\VariantMap;
+use Crux\Type\Map;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Crux\Core\Is Class Definition ////////////////////////////////////////////////////////////////////////////////////
@@ -745,22 +745,37 @@ class Is
 	public static function variantInterface($mixTest) : bool
 	{
 		// Return the test
-		return (($mixTest instanceof Variant) || ($mixTest instanceof VariantList) || ($mixTest instanceof VariantMap));
+		return ($mixTest instanceof Variant);
 	}
 
 	/**
-	 * This method determines whether or not a variable is a variant list
+	 * This method determines whether or not a variable is a variant scalar value
 	 * @access public
-	 * @name \Crux\Core\Is::variantList()
+	 * @name \Crux\Core\Is::variantScalar()
 	 * @package \Crux\Core\Is
 	 * @param mixed $mixTest
 	 * @return bool
 	 * @static
 	 */
-	public static function variantList($mixTest) : bool
+	public static function variantScalar($mixTest) : bool
 	{
 		// Return the test
-		return ($mixTest instanceof VariantList);
+		return ($mixTest instanceof Variant\Scalar);
+	}
+
+	/**
+	 * This method determines whether or not a variable is a variant list
+	 * @access public
+	 * @name \Crux\Core\Is::variantVector()
+	 * @package \Crux\Core\Is
+	 * @param mixed $mixTest
+	 * @return bool
+	 * @static
+	 */
+	public static function variantVector($mixTest) : bool
+	{
+		// Return the test
+		return ($mixTest instanceof Variant\Vector);
 	}
 
 	/**
@@ -775,7 +790,7 @@ class Is
 	public static function variantMap($mixTest) : bool
 	{
 		// Return the test
-		return ($mixTest instanceof VariantMap);
+		return ($mixTest instanceof Variant\Map);
 	}
 
 	/**

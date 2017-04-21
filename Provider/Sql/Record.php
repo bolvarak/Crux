@@ -66,7 +66,7 @@ class Record implements Serialize\Able
 	 * @param string $strProperty
 	 * @return \Crux\Type\Variant
 	 * @throws \Crux\Core\Exception\Provider\Sql\Record
-	 * @uses \Crux\Type\VariantMap::getIterator()
+	 * @uses \Crux\Type\Map::getIterator()
 	 * @uses \Crux\Core\Is::encodedHtml()
 	 * @uses \Crux\Core\Exception\Provider\Sql\Record::__construct()
 	 * @uses str_replace()
@@ -108,7 +108,7 @@ class Record implements Serialize\Able
 	 * @param string $strProperty
 	 * @param mixed $mixValue
 	 * @uses \Crux\Core\Is::html()
-	 * @uses \Crux\Type\VariantMap::set()
+	 * @uses \Crux\Type\Map::set()
 	 * @uses htmlspecialchars()
 	 */
 	public function __set(string $strProperty, $mixValue)
@@ -126,7 +126,7 @@ class Record implements Serialize\Able
 	 * @access protected
 	 * @name \Crux\Provider\Sql\Record::$mContainer
 	 * @package \Crux\Provider\Sql\Record
-	 * @var \Crux\Type\VariantMap
+	 * @var \Crux\Type\Map
 	 */
 	protected $mContainer;
 
@@ -148,14 +148,14 @@ class Record implements Serialize\Able
 	 * @access public
 	 * @name \Crux\Provider\Sql\Record::__construct()
 	 * @package \Crux\Provider\Sql\Record
-	 * @uses \Crux\Type\VariantMap::__construct()
+	 * @uses \Crux\Type\Map::__construct()
 	 */
 	public function __construct(Statement $pdoStatement)
 	{
 		// Set the statement into the instance
 		$this->mStatement = $pdoStatement;
 		// Initialize the data container
-		$this->mContainer = new Type\VariantMap();
+		$this->mContainer = new Type\Map();
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,8 +199,8 @@ class Record implements Serialize\Able
 	 * @param string $strColumn
 	 * @return \Crux\Type\Variant
 	 * @throws \Crux\Core\Exception\Provider\Sql\Record
-	 * @uses \Crux\Type\VariantMap::containsKey()
-	 * @uses \Crux\Type\VariantMap::get()
+	 * @uses \Crux\Type\Map::containsKey()
+	 * @uses \Crux\Type\Map::get()
 	 * @uses \Crux\Core\Exception\Provider\Sql\Record::__construct()
 	 * @uses sprintf()
 	 */
@@ -226,7 +226,7 @@ class Record implements Serialize\Able
 	 * @package \Crux\Provider\Sql\Record
 	 * @param bool $blnPrettyPrint [false]
 	 * @return string
-	 * @uses \Crux\Type\VariantMap::toJson()
+	 * @uses \Crux\Type\Map::toJson()
 	 */
 	public function toJson(bool $blnPrettyPrint = false) : string
 	{
@@ -244,7 +244,7 @@ class Record implements Serialize\Able
 	 * @param string $strChildListNode ['item']
 	 * @param bool $blnPrettyPrint [false]
 	 * @return string
-	 * @uses \Crux\Type\VariantMap::toXml()
+	 * @uses \Crux\Type\Map::toXml()
 	 */
 	public function toXml(bool $blnIncludeHeaders = true, string $strRootNode = 'payload', string $strChildListNode = 'item', bool $blnPrettyPrint = false) : string
 	{
@@ -262,7 +262,7 @@ class Record implements Serialize\Able
 	 * @name \Crux\Provider\Sql\Record::toArray()
 	 * @package \Crux\Provider\Sql\Record
 	 * @return array<string, mixed>
-	 * @uses \Crux\Type\VariantMap::toArray()
+	 * @uses \Crux\Type\Map::toArray()
 	 */
 	public function toArray() : array
 	{
@@ -276,7 +276,7 @@ class Record implements Serialize\Able
 	 * @name \Crux\Provider\Sql\Record::toCollection()
 	 * @package \Crux\Provider\Sql\Record
 	 * @return \Crux\Collection\Map
-	 * @uses \Crux\Type\VariantMap::toMap()
+	 * @uses \Crux\Type\Map::toMap()
 	 */
 	public function toCollection() : Collection\Map
 	{
@@ -290,7 +290,7 @@ class Record implements Serialize\Able
 	 * @name \Crux\Provider\Sql\Record::toObject()
 	 * @package \Crux\Provider\Sql\Record
 	 * @return \stdClass
-	 * @uses \Crux\Type\VariantMap::toObject()
+	 * @uses \Crux\Type\Map::toObject()
 	 */
 	public function toObject() : \stdClass
 	{
@@ -303,9 +303,9 @@ class Record implements Serialize\Able
 	 * @access public
 	 * @name \Crux\Provider\Sql\Record::toVariant()
 	 * @package \Crux\Provider\Sql\Record
-	 * @return \Crux\Type\VariantMap
+	 * @return \Crux\Type\Map
 	 */
-	public function toVariant() : Type\VariantMap
+	public function toVariant() : Type\Map
 	{
 		// Return the column container
 		return $this->mContainer;

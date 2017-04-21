@@ -1045,7 +1045,7 @@ class Vector extends \ArrayObject implements \JsonSerializable
 			} elseif ($mixValue instanceof \Crux\Type\Variant) {
 				// Add the value to the container
 				array_push($arrVector, $mixValue->getData());
-			} elseif ($mixValue instanceof \Crux\Type\VariantMap) {
+			} elseif ($mixValue instanceof \Crux\Type\Map) {
 				// Add the value to the container
 				array_push($arrVector, $mixValue->getData());
 			} elseif ($mixValue instanceof \Crux\Type\VariantList) {

@@ -82,7 +82,7 @@ abstract class Es
 	 * @access public
 	 * @name \Crux\Serialize\Es::toVariant()
 	 * @package \Crux\Serialize\Es
-	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\VariantMap
+	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\Map
 	 */
 	abstract public function toVariant();
 

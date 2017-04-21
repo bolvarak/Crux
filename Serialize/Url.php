@@ -172,7 +172,7 @@ class Url extends Es
 	 * @uses \Crux\Core\Is::map()
 	 * @uses \Crux\Core\Is::scalar()
 	 * @uses \Crux\Type\VariantList::toArray()
-	 * @uses \Crux\Type\VariantMap::toArray()
+	 * @uses \Crux\Type\Map::toArray()
 	 * @uses \Crux\Type\Variant::getData()
 	 * @uses \Crux\Collection\Vector::toArray()
 	 * @uses \Crux\Collection\Map::toArray()
@@ -294,7 +294,7 @@ class Url extends Es
 	 * @access public
 	 * @name \Crux\Serialize\Url::toVariant()
 	 * @package \Crux\Serialize\Url
-	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\VariantMap
+	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\Map
 	 * @uses \Crux\Type\Variant::Factory()
 	 */
 	public function toVariant()

@@ -647,19 +647,19 @@ class Xml extends Es
 	 * @access public
 	 * @name \Crux\Serialize\Xml::toVariant()
 	 * @package \Crux\Serialize\Xml
-	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\VariantMap
+	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\Map
 	 * @uses \Crux\Core\Is::associativeArray()
 	 * @uses \Crux\Core\Is::sequentialArray()
 	 * @uses \Crux\Type\Variant::Factory()
 	 * @uses \Crux\Type\VariantList::fromArray()
-	 * @uses \Crux\Type\VariantMap::fromArray()
+	 * @uses \Crux\Type\Map::fromArray()
 	 */
 	public function toVariant()
 	{
 		// Check the data type
 		if (Core\Is::associativeArray($this->mOutput)) {
 			// Return the new variant map
-			return Type\VariantMap::fromArray($this->mOutput);
+			return Type\Map::fromArray($this->mOutput);
 		} elseif (Core\Is::sequentialArray($this->mOutput)) {
 			// Return the new variant list
 			return Type\VariantList::fromArray($this->mOutput);

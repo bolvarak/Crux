@@ -20,7 +20,7 @@ use Crux\Type;
 /// \Crux\Request\Container Class Definition /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class Container extends Type\VariantMap implements \JsonSerializable
+class Container extends Type\Variant\Map implements \JsonSerializable
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// Constants ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,6 +231,15 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 */
 	protected $mToken;
 
+	/**
+	 * This property contains the uploaded files processed by Crux
+	 * @access protected
+	 * @name \Crux\Request\Container::$mUploads
+	 * @package \Crux\Request\Container
+	 * @var \Crux\Collection\Map
+	 */
+	protected $mUploads;
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// Factory //////////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,7 +252,7 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 * @return \Crux\Request\Container
 	 * @static
 	 */
-	public static function Factory(string $strSource = '')
+	public static function Factory(string $strSource = '') : Container
 	{
 		// Return the new instance
 		return new self($strSource);
@@ -305,7 +314,7 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 * @name \Crux\Request\Container::jsonSerialize()
 	 * @package \Crux\Request\Container
 	 * @return string
-	 * @uses \Crux\Type\VariantMap::toArray()
+	 * @uses \Crux\Type\Map::toArray()
 	 */
 	public function jsonSerialize()
 	{
@@ -322,6 +331,14 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 * @access protected
 	 * @name \Crux\Request\Container ::bootstrapFiles()
 	 * @return array
+	 * @uses \Crux\Core\Is::associativeArray()
+	 * @uses sys_get_temp_dir()
+	 * @uses tempnam()
+	 * @uses base64_decode()
+	 * @uses file_put_contents()
+	 * @uses mime_content_type()
+	 * @uses filesize()
+	 * @uses array_push()
 	 */
 	protected function bootstrapFiles(array $arrFiles) : array
 	{
@@ -372,13 +389,15 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 * @access protected
 	 * @name \Crux\Request\Container ::consumeFileRequest()
 	 * @return void
+	 * @uses \Crux\Collection\Map::fromArray()
+	 * @uses \Crux\Request\File::fromRequest()
 	 */
-	protected function consumeFileRequest()
+	protected function consumeFileRequest() : void
 	{
 		// Create our files placeholder
-		$this->mFiles = (Core\Is::associativeArray($this->mOriginalFiles) ? Core\Util::mapFactory($this->mOriginalFiles) : Core\Util::vectorFactory($this->mOriginalFiles));
-		// Set the files into the collective
-		$this->mCollective->set('uploads', $this->mFiles);
+		$this->mFiles = Collection\Map::fromArray($_FILES);
+		// Set the files into the instance
+		$this->mUploads = File::fromRequest();
 	}
 
 	/**
@@ -387,7 +406,7 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 * @name \Crux\Request\Container ::consumeGetRequest()
 	 * @return void
 	 */
-	protected function consumeGetRequest()
+	protected function consumeGetRequest() : void
 	{
 		// Set the GET request into the instance
 		$this->mGet = Core\Util::mapFactory($this->mOriginalGet);
@@ -404,7 +423,7 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 * @name \Crux\Request\Container ::consumeHeaderRequest()
 	 * @return void
 	 */
-	protected function consumeHeaderRequest()
+	protected function consumeHeaderRequest() : void
 	{
 		// Load the headers
 		$this->loadHeaders();
@@ -421,7 +440,7 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 * @name \Crux\Request\Container ::consumePostRequest()
 	 * @return void
 	 */
-	protected function consumePostRequest()
+	protected function consumePostRequest() : void
 	{
 		// Check for content
 		if (empty($this->mRawPost)) {
@@ -469,7 +488,7 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 * @name \Crux\Request\Container ::consumeServerData()
 	 * @return void
 	 */
-	protected function consumeServerData()
+	protected function consumeServerData() : void
 	{
 		// Load the SERVER data
 		$this->mServer = Core\Util::mapFactory($this->mOriginalServer);
@@ -485,7 +504,7 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	 * @access protected
 	 * @name \Crux\Request\Container ::entropy()
 	 * @param string $strProperty
-	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\VariantMap
+	 * @return \Crux\Type\Variant|\Crux\Type\Variant\Map|\Crux\Type\Variant\Scalar|\Crux\Type\Variant\Vector
 	 * @uses \Crux\Type\IsVariant::contains()
 	 * @uses \Crux\Type\Variant::Factory()
 	 * @uses \Crux\Request\Container::get()
@@ -712,7 +731,7 @@ class Container extends Type\VariantMap implements \JsonSerializable
 	}
 
 	/**
-	 * This method deterines whether or not the POST data is in XML format
+	 * This method determines whether or not the POST data is in XML format
 	 * @access public
 	 * @name \Crux\Request\Container ::isXml()
 	 * @return bool
@@ -933,6 +952,19 @@ class Container extends Type\VariantMap implements \JsonSerializable
 		}
 		// Return the token from the instance
 		return $this->mToken;
+	}
+
+	/**
+	 * This method returns the uploaded files from the instance
+	 * @access public
+	 * @name \Crux\Request\Container::uploads()
+	 * @package \Crux\Request\Container
+	 * @return \Crux\Collection\Map
+	 */
+	public function uploads() : Collection\Map
+	{
+		// Return the uploads collection from the instance
+		return $this->mUploads;
 	}
 
 	/**

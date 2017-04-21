@@ -194,7 +194,7 @@ class Response
 	 * @name \Crux\Request\Response::json()
 	 * @package \Crux\Request\Response
 	 * @return string
-	 * @uses \Crux\Type\VariantMap::toJson()
+	 * @uses \Crux\Type\Map::toJson()
 	 */
 	protected function json() : string
 	{
@@ -230,7 +230,7 @@ class Response
 	 * @name \Crux\Request\Response::php()
 	 * @package \Crux\Request\Response
 	 * @return string
-	 * @uses \Crux\Type\VariantMap::toMap()
+	 * @uses \Crux\Type\Map::toMap()
 	 * @uses \Crux\Collection\Map::toArray()
 	 * @uses serialize()
 	 */

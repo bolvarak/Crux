@@ -1,10 +1,10 @@
 <?php
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Crux\Type Namespace //////////////////////////////////////////////////////////////////////////////////////////////
+/// Crux\Type\Variant Namespace //////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-namespace Crux\Type;
+namespace Crux\Type\Variant;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Imports //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,13 +12,20 @@ namespace Crux\Type;
 
 use Crux\Core;
 use Crux\Collection;
+use Crux\Type;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Crux\Type\VariantList Class Definition ///////////////////////////////////////////////////////////////////////////
+/// Crux\Type\Variant\Vector Class Definition ////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class VariantList extends Collection\Vector implements IsVariant, \JsonSerializable
+class Vector extends Collection\Vector implements \JsonSerializable
 {
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/// Traits ///////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	use Type\Variant;
+
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	/// Properties ///////////////////////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,17 +33,17 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This property defines the original type of the variable
 	 * @access private
-	 * @name \Crux\Type\VariantList::$mOriginalType
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::$mOriginalType
+	 * @package \Crux\Type\Variant\Vector
 	 * @var int
 	 */
-	private $mOriginalType = self::Array;
+	private $mOriginalType = Core\Api::Array;
 
 	/**
 	 * This property contains the name for the original data type
 	 * @access private
-	 * @name \Crux\Type\VariantList::$mOriginalTypeName
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::$mOriginalTypeName
+	 * @package \Crux\Type\Variant\Vector
 	 * @var string
 	 */
 	private $mOriginalTypeName = null;
@@ -48,14 +55,14 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method sets up the instance with existing data
 	 * @access public
-	 * @name \Crux\Type\VariantList::__constructor()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::__constructor()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param array|null|\Crux\Collection\Vector $mixSource
 	 * @uses \Crux\Collection\Vector::__construct()
 	 * @uses \Crux\Core\Is::sequentialArray()
 	 * @uses \Crux\Collection\Vector::fromArray()
 	 * @uses \Crux\Collection\Vector::getIterator();
-	 * @uses \Crux\Type\VariantList::set()
+	 * @uses \Crux\Type\Variant\Vector::set()
 	 * @uses gettype()
 	 */
 	public function __construct($mixSource = null)
@@ -67,20 +74,20 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 		// Check for data
 		if (Core\Is::sequentialArray($mixSource)) {
 			// Set the original type
-			$this->mOriginalType = self::Array;
+			$this->mOriginalType = Core\Api::Array;
 			// Create a new vector
 			$vecTemp = Collection\Vector::fromArray($mixSource);
-		} elseif ($mixSource instanceof Collection\Vector) {
+		} elseif (Core\Is::vector($mixSource)) {
 			// Set the original type
-			$this->mOriginalType = self::Vector;
+			$this->mOriginalType = Core\Api::Vector;
 			// Set the data into the instance
 			$vecTemp = $mixSource;
-		} elseif (Core\Is::variantList($mixSource)) {
+		} elseif (Core\Is::variantVector($mixSource)) {
 			// We're done, we already have a variant
 			return $mixSource;
 		} else {
 			// Set the original type
-			$this->mOriginalType = self::Vector;
+			$this->mOriginalType = Core\Api::Vector;
 			// Create an empty vector
 			$vecTemp = new Collection\Vector();
 		}
@@ -100,13 +107,13 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method allows for dynamic calling of conversion extensions
 	 * @access public
-	 * @name \Crux\Type\VariantList::__call()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::__call()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param string $strMethod
 	 * @param array $arrArguments
 	 * @return mixed
-	 * @throws \Crux\Core\Exception\Type\VariantList
-	 * @uses \Crux\Core\Api::$mVarianListtExtensions
+	 * @throws \Crux\Core\Exception\Type\Variant\Vector
+	 * @uses \Crux\Core\Api::$mVariantVectorExtensions
 	 * @uses substr()
 	 * @uses strtolower()
 	 * @uses substr_replace()
@@ -118,7 +125,7 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 		// Check the method for an extension call
 		if (strtolower(substr($strMethod, 0, 2)) === 'to') {
 			// Iterate over the extensions
-			foreach (Core\Api::$mVariantListExtensions as $strName => $fnCallback) {
+			foreach (Core\Api::$mVariantVectorExtensions as $strName => $fnCallback) {
 				// Check the name
 				if (strtolower(substr_replace($strMethod, '', 0, 2)) === strtolower($strName)) {
 					// Execute the callback
@@ -126,30 +133,11 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 				}
 			}
 			// No extension available, we're done
-			throw new Core\Exception\Type\VariantList(sprintf('Extension [%s] does not exist.', substr_replace($strMethod, '', 0, 2)));
+			throw new Core\Exception\Type\Variant\Vector(sprintf('Extension [%s] does not exist.', substr_replace($strMethod, '', 0, 2)));
 		} else {
 			// No method or extension available, we're done
-			throw new Core\Exception\Type\VariantList(sprintf('Method or Extension [%s] does not exist.', $strMethod));
+			throw new Core\Exception\Type\Variant\Vector(sprintf('Method or Extension [%s] does not exist.', $strMethod));
 		}
-	}
-
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	/// Static Constructor ///////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * This method constructs a new instance from any traversable data
-	 * @access public
-	 * @name \Crux\Type\VariantList::Factory()
-	 * @package \Crux\Type\VariantList
-	 * @return \Crux\Type\VariantList
-	 * @static
-	 * @uses \Crux\Type\VariantList::__construct()
-	 */
-	public static function Factory()
-	{
-		// Return the new instance
-		return new self(func_get_args()[0] ?? null);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,14 +147,14 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method constructs a new instance from a sequential array
 	 * @access public
-	 * @name \Crux\Type\VariantList::fromArray()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::fromArray()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param array $arrSource
-	 * @return \Crux\Type\VariantList
+	 * @return \Crux\Type\Variant\Vector
 	 * @static
-	 * @uses \Crux\Type\VariantList::__construct()
+	 * @uses \Crux\Type\Variant\Vector::__construct()
 	 */
-	public static function fromArray(array $arrSource)
+	public static function fromArray(array $arrSource) : Vector
 	{
 		// Return the new instance
 		return new self($arrSource);
@@ -175,14 +163,14 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method constructs a new instance from an existing vector
 	 * @access public
-	 * @name \Crux\Type\VariantList::fromVector()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::fromVector()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param \Crux\Collection\Vector<mixed> $vecSource
-	 * @return \Crux\Type\VariantList
+	 * @return \Crux\Type\Variant\Vector
 	 * @static
-	 * @uses \Crux\Type\VariantList::__construct()
+	 * @uses \Crux\Type\Variant\Vector::__construct()
 	 */
-	public static function fromVector(Collection\Vector $vecSource) : VariantList
+	public static function fromVector(Collection\Vector $vecSource) : Vector
 	{
 		// Return the new instance
 		return new self($vecSource);
@@ -195,10 +183,10 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method converts the variant list to a string when the instance is referenced as a string
 	 * @access public
-	 * @name \Crux\Type\VariantList::__toString()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::__toString()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return string
-	 * @uses \Crux\Type\VariantList::toString()
+	 * @uses \Crux\Type\Variant\Vector::toString()
 	 */
 	public function __toString() : string
 	{
@@ -207,16 +195,16 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	}
 
 	/**
-	 * This method returns a json-encodable construct of a variant
+	 * This method returns a json-encode-able construct of a variant
 	 * @access public
-	 * @name \Crux\Type\VariantList::jsonSerialize()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::jsonSerialize()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return mixed
-	 * @uses \Crux\Type\VariantList::getData()
+	 * @uses \Crux\Type\Variant\Vector::getData()
 	 */
 	public function jsonSerialize()
 	{
-		// Return the json encodable data
+		// Return the json encode-able data
 		return $this->getData();
 	}
 
@@ -227,18 +215,18 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method adds a conversion extension to the construct
 	 * @access public
-	 * @name \Crux\Type\VariantList::addExtension()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::addExtension()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param $strName
 	 * @param callable $fnCallback
 	 * @return void
 	 * @static
-	 * @uses \Crux\Core\Api::addVariantListExtension()
+	 * @uses \Crux\Core\Api::addVariantVectorExtension()
 	 */
 	public static function addExtension($strName, callable $fnCallback)
 	{
 		// Add the extension
-		Core\Api::addVariantListExtension($strName, $fnCallback);
+		Core\Api::addVariantVectorExtension($strName, $fnCallback);
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,18 +236,18 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method adds an element to the vector
 	 * @access public
-	 * @name \Crux\Type\VariantList ::add()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::add()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param mixed $mixValue
-	 * @return \Crux\Type\VariantList $this
+	 * @return \Crux\Type\Variant\Vector $this
 	 * @uses \Crux\Core\Is::associativeArray()
 	 * @uses \Crux\Core\Is::map()
 	 * @uses \Crux\Core\Is::vector()
 	 * @uses \Crux\Core\Is::sequentialArray()
 	 * @uses \Crux\Core\Is::object()
-	 * @uses \Crux\Type\VariantMap::fromArray()
-	 * @uses \Crux\Type\VariantList::fromArray()
-	 * @uses \Crux\Type\VariantMap::fromObject()
+	 * @uses \Crux\Type\Map::fromArray()
+	 * @uses \Crux\Type\Variant\Vector::fromArray()
+	 * @uses \Crux\Type\Map::fromObject()
 	 * @uses \Crux\Type\Variant::Factory()
 	 */
 	public function add($mixValue)
@@ -267,25 +255,25 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 		// Check the data type
 		if (Core\Is::associativeArray($mixValue)) {
 			// Convert the data to a variant map
-			$mixData = VariantMap::fromArray($mixValue);
+			$mixData = Map::fromArray($mixValue);
 		} elseif (Core\Is::map($mixValue)) {
 			// Convert the data to a variant map
-			$mixData = VariantMap::fromArray($mixValue->toArray());
+			$mixData = Map::fromArray($mixValue->toArray());
 		} elseif (Core\Is::vector($mixValue)) {
 			// Convert the data to a variant list
-			$mixData = VariantList::fromVector($mixValue);
+			$mixData = Vector::fromVector($mixValue);
 		} elseif (Core\Is::sequentialArray($mixValue)) {
 			// Convert the data to a variant list
-			$mixData = VariantList::fromArray($mixValue);
-		} elseif ($mixValue instanceof IsVariant) {
+			$mixData = Vector::fromArray($mixValue);
+		} elseif (Core\Is::variant($mixValue)) {
 			// We're done, the data is sane
 			$mixData = $mixValue;
 		} elseif (Core\Is::object($mixValue)) {
 			// Convert the data to a variant map
-			$mixData = VariantMap::fromObject($mixValue);
+			$mixData = Map::fromObject($mixValue);
 		} else {
 			// Convert the data to a variant
-			$mixData = Variant::Factory($mixValue);
+			$mixData = self::Factory($mixValue);
 		}
 		// Set the data into the instance
 		parent::add($mixData);
@@ -296,73 +284,73 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method searches the Vector for a key with case-insensitivity and returns the data if found, Variant::Factory(null) elsewise
 	 * @access public
-	 * @name \Crux\Type\VariantList ::at()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::at()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param int $intKey
-	 * @return \Crux\Type\IsVariant
+	 * @return \Crux\Type\Variant
 	 * @uses \Crux\Collection\Vector::contains()
 	 * @uses \Crux\Collection\Vector::at()
 	 * @uses \Crux\Type\Variant::Factory()
 	 */
-	public function at(int $intKey) : IsVariant
+	public function at(int $intKey) : Type\Variant
 	{
 		if (parent::contains($intKey)) {
 			// We're done, return the key
 			return parent::at($intKey);
 		} else {
 			// We're done, return an empty variant
-			return Variant::Factory(null);
+			return self::Factory(null);
 		}
 	}
 
 	/**
-	 * This method is an alias of VariantList::at()
+	 * This method is an alias of Variant\Vector::at()
 	 * @access public
-	 * @name \Crux\Type\VariantList ::get()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::get()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param int $intKey
-	 * @return \Crux\Type\IsVariant $this
-	 * @see  VariantList::at()
-	 * @uses \Crux\Type\VariantList::at()
+	 * @return \Crux\Type\Variant $this
+	 * @see  \Crux\Type\Variant\Vector::at()
+	 * @uses \Crux\Type\Variant\Vector::at()
 	 */
-	public function get(int $intKey) : IsVariant
+	public function get(int $intKey) : Type\Variant
 	{
 		// Return the data
 		return $this->at($intKey);
 	}
 
 	/**
-	 * This method groups a VariantList<VariantMap> into a VariantMap<string, VariantList>> indexed by $strMapKey
+	 * This method groups a Variant\Vector<Variant\Map> into a Variant\Map<string, Variant\Vector>> indexed by $strMapKey
 	 * @access public
-	 * @name \Crux\Type\VariantList ::groupedVariantMap()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::groupedVariantMap()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param mixed $mixOperand
-	 * @return \Crux\Type\VariantMap
+	 * @return \Crux\Type\Variant\Map
 	 * @uses \Crux\Collection\Map::__constructor()
-	 * @uses \Crux\Type\VariantMap::get()
-	 * @uses \Crux\Type\VariantMap::isEmpty()
+	 * @uses \Crux\Type\Map::get()
+	 * @uses \Crux\Type\Map::isEmpty()
 	 * @uses \Crux\Type\Variant::toString()
 	 * @uses \Crux\Collection\Vector::__constructor()
 	 * @uses \Crux\Collection\Map::set()
 	 * @uses \Crux\Collection\Vector::add()
 	 * @uses \Crux\Type\Variant::getData()
-	 * @uses \Crux\Type\VariantMap::Factory()
+	 * @uses \Crux\Type\Variant\Map::Factory()
 	 */
-	public function groupedVariantMap($mixOperand) : VariantMap
+	public function groupedVariantMap($mixOperand) : Map
 	{
 		// Group the vector
 		$mapGrouped = $this->toVector()->mapGroup($mixOperand);
 		// Return the variant map
-		return VariantMap::fromMap($mapGrouped);
+		return Map::fromMap($mapGrouped);
 	}
 
 	/**
 	 * This method checks the vector data for duplicates
 	 * @access public
-	 * @name \Crux\Type\VariantList ::hasDuplicates()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::hasDuplicates()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return bool
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses \Crux\Type\IsVariant::getData()
 	 * @uses in_array()
 	 * @uses array_push()
@@ -388,13 +376,13 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method implodes the vector into a string list
 	 * @access public
-	 * @name \Crux\Type\VariantList ::implode()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::implode()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param string $strDelimiter [',']
 	 * @param bool $blnForMySQL [false]
 	 * @return string
 	 * @uses \Crux\Collection\Vector::__constructor()
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses \Crux\Type\IsVariant::getData()
 	 * @uses \Crux\Collection\Vector::add()
 	 * @uses \Crux\Collection\Vector::toArray()
@@ -422,13 +410,13 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method implodes the vector with a callback just before data reset
 	 * @access public
-	 * @name \Crux\Type\VariantList ::implodeCallback()
-	 * @package \Crux\Types\VariantList
+	 * @name \Crux\Type\Variant\Vector ::implodeCallback()
+	 * @package \Crux\Types\Variant\Vector
 	 * @param string $strDelimiter [',']
 	 * @param callable $fnCallback
 	 * @return string
 	 * @uses \Crux\Collection\Vector::__constructor()
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses \Crux\Collection\Vector::add()
 	 * @uses call_user_func_array()
 	 * @uses \Crux\Collection\Vector::toArray()
@@ -450,10 +438,10 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method removes the last element in the vector and returns its real value
 	 * @access public
-	 * @name \Crux\Type\VariantList ::popReal()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::popReal()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return mixed
-	 * @uses \Crux\Type\VariantList::pop()
+	 * @uses \Crux\Type\Variant\Vector::pop()
 	 * @uses \Crux\Type\IsVariant::getData()
 	 */
 	public function popReal()
@@ -463,19 +451,19 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	}
 
 	/**
-	 * This method does the same as VariantList::reserve() as well as set the default value of the reservations
+	 * This method does the same as Variant\Vector::reserve() as well as set the default value of the reservations
 	 * @access public
-	 * @name \Crux\Type\VariantList ::reserveDefault()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::reserveDefault()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param int $intSize
 	 * @param mixed $mixDefault [null]
-	 * @return \Crux\Type\VariantList $this
-	 * @uses \Crux\Type\VariantList::reserve()
-	 * @uses \Crux\Type\VariantList::keys()
+	 * @return \Crux\Type\Variant\Vector $this
+	 * @uses \Crux\Type\Variant\Vector::reserve()
+	 * @uses \Crux\Type\Variant\Vector::keys()
 	 * @uses \Crux\Collection\Vector::getIterator()
-	 * @uses \Crux\Type\VariantList::set()
+	 * @uses \Crux\Type\Variant\Vector::set()
 	 */
-	public function reserveDefault(int $intSize, $mixDefault = null) : VariantList
+	public function reserveDefault(int $intSize, $mixDefault = null) : Vector
 	{
 		// Reserve the space
 		$this->reserve($intSize);
@@ -491,12 +479,12 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method searches the Vector for a specified term in the values, if found the index will be returned, -1 elsewise
 	 * @access public
-	 * @name \Crux\Type\VariantList ::search()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::search()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param mixed $mixTerm
 	 * @return int
 	 * @uses \Crux\Collection\Vector::__constructor()
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses \Crux\Type\IsVariant::getData()
 	 * @uses \Crux\Collection\Vector::add()
 	 * @uses \Crux\Collection\Vector::linearSearch()
@@ -517,12 +505,12 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method searches the Vector for a specified term, with case insensitivity, in the values, if found the index will be returned, -1 elsewise
 	 * @access public
-	 * @name \Crux\Type\VariantList ::search()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::search()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param mixed $mixTerm
 	 * @return int
 	 * @uses \Crux\Collection\Vector::__constructor()
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses \Crux\Type\IsVariant::getData()
 	 * @uses \Crux\Collection\Vector::add()
 	 * @uses \Crux\Collection\Vector::linearSearch()
@@ -551,38 +539,38 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method sets a new key into the instance
 	 * @access public
-	 * @name \Crux\Type\VariantList ::set()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::set()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param int $intKey
 	 * @param mixed $mixValue
-	 * @return \Crux\Type\VariantList $this
-	 * @uses \Crux\Type\VariantList::setWith()
-	 * @uses \Crux\Type\VariantList::Factory()
+	 * @return \Crux\Type\Variant\Vector $this
+	 * @uses \Crux\Type\Variant\Vector::setWith()
+	 * @uses \Crux\Type\Variant\Vector::Factory()
 	 */
 	public function set(int $intKey, $mixValue)
 	{
 		// Check the data type
 		if (Core\Is::associativeArray($mixValue)) {
 			// Convert the data to a variant map
-			$mixData = VariantMap::fromArray($mixValue);
+			$mixData = Map::fromArray($mixValue);
 		} elseif (Core\Is::map($mixValue)) {
 			// Convert the data to a variant map
-			$mixData = VariantMap::fromArray($mixValue->toArray());
+			$mixData = Map::fromArray($mixValue->toArray());
 		} elseif (Core\Is::vector($mixValue)) {
 			// Convert the data to a variant list
-			$mixData = VariantList::fromVector($mixValue);
+			$mixData = Vector::fromVector($mixValue);
 		} elseif (Core\Is::sequentialArray($mixValue)) {
 			// Convert the data to a variant list
-			$mixData = VariantList::fromArray($mixValue);
-		} elseif ($mixValue instanceof IsVariant) {
+			$mixData = Vector::fromArray($mixValue);
+		} elseif (Core\Is::variant($mixValue)) {
 			// We're done, the data is sane
 			$mixData = $mixValue;
 		} elseif (Core\Is::object($mixValue)) {
 			// Convert the data to a variant map
-			$mixData = VariantMap::fromObject($mixValue);
+			$mixData = Map::fromObject($mixValue);
 		} else {
 			// Convert the data to a variant
-			$mixData = Variant::Factory($mixValue);
+			$mixData = self::Factory($mixValue);
 		}
 		// Add the data
 		parent::set($intKey, $mixData);
@@ -595,13 +583,13 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * This method converts the VariantList to a Vector of booleans
+	 * This method converts the Variant\Vector to a Vector of booleans
 	 * @access public
-	 * @name \Crux\Type\VariantList ::toBoolList()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::toBoolList()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return \Crux\Collection\Vector
 	 * @uses \Crux\Collection\Vector::__constructor()
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses \Crux\Type\Variant::toBool()
 	 * @uses \Crux\Collection\Vector::add()
 	 */
@@ -612,7 +600,7 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 		// Iterate over the current Vector
 		foreach ($this->getIterator() as $intIndex => $varItem) {
 			// Check for a variant
-			if ($varItem instanceof Variant) {
+			if (Core\Is::variant($varItem)) {
 				// Add the item to the temporary vector
 				$vecTemp->add($varItem->toBool());
 			} else {
@@ -625,13 +613,13 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	}
 
 	/**
-	 * This method converts the VariantList to a Vector of integers
+	 * This method converts the Variant\Vector to a Vector of integers
 	 * @access public
-	 * @name \Crux\Type\VariantList ::toIntList()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::toIntList()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return \Crux\Collection\Vector
 	 * @uses \Crux\Collection\Vector::__constructor()
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses \Crux\Type\Variant::toInt()
 	 * @uses \Crux\Collection\Vector::add()
 	 */
@@ -642,7 +630,7 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 		// Iterate over the current Vector
 		foreach ($this->getIterator() as $varItem) {
 			// Check for a variant
-			if ($varItem instanceof Variant) {
+			if (Core\Is::variant($varItem)) {
 				// Add the item to the temporary vector
 				$vecTemp->add($varItem->toInt());
 			} else {
@@ -657,10 +645,10 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method converts the variant list to JSON
 	 * @access public
-	 * @name \Crux\Type\VariantList::toJson()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::toJson()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return string
-	 * @uses \Crux\Type\VariantList::getData()
+	 * @uses \Crux\Type\Variant\Vector::getData()
 	 * @uses json_encode()
 	 */
 	public function toJson() : string
@@ -672,10 +660,10 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method returns the Vector's keys as a vector
 	 * @access public
-	 * @name \Crux\Type\VariantList ::toKeysVector()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::toKeysVector()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return \Crux\Collection\Vector
-	 * @uses \Crux\Type\VariantList::toKeysArray()
+	 * @uses \Crux\Type\Variant\Vector::toKeysArray()
 	 * @uses \Crux\Collection\Vector::fromArray()
 	 */
 	public function toKeysVector() : Collection\Vector
@@ -687,8 +675,8 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method converts the variant list to a string
 	 * @access public
-	 * @name \Crux\Type\VariantList::toString()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::toString()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return string
 	 * @uses serialize()
 	 */
@@ -699,13 +687,13 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	}
 
 	/**
-	 * This method converts the VariantList to a Vector of strings
+	 * This method converts the Variant\Vector to a Vector of strings
 	 * @access public
-	 * @name \Crux\Type\VariantList ::toStringList()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::toStringList()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return Collection\Vector
 	 * @uses \Crux\Collection\Vector::__constructor()
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses \Crux\Type\IsVariant::toString()
 	 * @uses \Crux\Collection\Vector::add()
 	 */
@@ -716,7 +704,7 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 		// Iterate over the current Vector
 		foreach ($this->getIterator() as $varItem) {
 			// Check for a variant
-			if ($varItem instanceof Variant) {
+			if (Core\Is::variant($varItem)) {
 				// Add the item to the temporary vector
 				$vecTemp->add($varItem->toString());
 			} else {
@@ -729,22 +717,22 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	}
 
 	/**
-	 * This method converts a VariantList<Collection\Map> to a VariantList<mixed> by combining the values in each map from key $strKey into a Vector<mixed>
+	 * This method converts a Variant\Vector<Collection\Map> to a Variant\Vector<mixed> by combining the values in each map from key $strKey into a Vector<mixed>
 	 * @access public
-	 * @name \Crux\Type\VariantList ::toTargetKeyList()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::toTargetKeyList()
+	 * @package \Crux\Type\Variant\Vector
 	 * @param string $strKey
-	 * @return \Crux\Type\VariantList
-	 * @uses \Crux\Type\VariantList::Factory()
-	 * @uses \Crux\Type\VariantList::implodeCallback()
-	 * @uses \Crux\Type\VariantMap::get()
+	 * @return \Crux\Type\Variant\Vector
+	 * @uses \Crux\Type\Variant\Vector::Factory()
+	 * @uses \Crux\Type\Variant\Vector::implodeCallback()
+	 * @uses \Crux\Type\Map::get()
 	 * @uses \Crux\Type\IsVariant::getData()
 	 * @uses explode()
 	 */
-	public function toTargetKeyList(string $strKey) : VariantList
+	public function toTargetKeyList(string $strKey) : Vector
 	{
 		// Return the vector
-		return self::Factory(explode(',', $this->implodeCallback(',', function (VariantMap $varMapData) use ($strKey) {
+		return new self(explode(',', $this->implodeCallback(',', function (Map $varMapData) use ($strKey) {
 			// Return the target key
 			return $varMapData->get($strKey)->getData();
 		})));
@@ -753,8 +741,8 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method returns a vector of the current vector's values
 	 * @access public
-	 * @name \Crux\Type\VariantList ::toValuesVector()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::toValuesVector()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return Collection\Vector
 	 * @see \Crux\Collection\Vector::keys()
 	 * @uses \Crux\Collection\Vector::keys()
@@ -768,10 +756,10 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method returns the data as an array with the values in Variant form
 	 * @access public
-	 * @name \Crux\Type\VariantList ::toVariantArray()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::toVariantArray()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return array
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses array_push()
 	 */
 	public function toVariantArray() : array
@@ -790,10 +778,10 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method returns the Vector's values as an array of Variants
 	 * @access public
-	 * @name \Crux\Type\VariantList ::toVariantValuesArray()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::toVariantValuesArray()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return array
-	 * @uses \Crux\Type\VariantList::toValuesArray()
+	 * @uses \Crux\Type\Variant\Vector::toValuesArray()
 	 */
 	public function toVariantValuesArray() : array
 	{
@@ -804,10 +792,10 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method returns the Vector's values as a Vector of Variants
 	 * @access public
-	 * @name \Crux\Type\VariantList ::toVariantValuesVector()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector ::toVariantValuesVector()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return \Crux\Collection\Vector
-	 * @uses \Crux\Type\VariantList::values()
+	 * @uses \Crux\Type\Variant\Vector::values()
 	 */
 	public function toVariantValuesVector() : Collection\Vector
 	{
@@ -818,15 +806,15 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method converts the variant list to a collection
 	 * @access public
-	 * @name \Crux\Type\VariantList::toVector()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::toVector()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return \Crux\Collection\Vector
 	 * @uses \Crux\Collection\Vector::__construct()
 	 * @uses \Crux\Core\Is::variantMap()
-	 * @uses \Crux\Core\Is::variantList()
+	 * @uses \Crux\Core\Is::Variant\Vector()
 	 * @uses \Crux\Core\Is::variant()
-	 * @uses \Crux\Type\VariantMap::toMap()
-	 * @uses \Crux\Type\VariantList::toVector()
+	 * @uses \Crux\Type\Map::toMap()
+	 * @uses \Crux\Type\Variant\Vector::toVector()
 	 * @uses \Crux\Type\Variant::getData()
 	 * @uses \Crux\Collection\Vector::add()
 	 */
@@ -840,7 +828,7 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 			if (Core\Is::variantMap($varValue)) {
 				// Add the value
 				$vecContainer->add($varValue->toMap());
-			} elseif (Core\Is::variantList($varValue)) {
+			} elseif (Core\Is::variantVector($varValue)) {
 				// Add the value
 				$vecContainer->add($varValue->toVector());
 			} elseif (Core\Is::variant($varValue)) {
@@ -858,16 +846,16 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method converts a variant list to XML
 	 * @access public
-	 * @name \Crux\Type\VariantList::toXml()
-	 * @package \Crux\Type\VariantList
-	 * @param string $strRootNode ['variantList']
+	 * @name \Crux\Type\Variant\Vector::toXml()
+	 * @package \Crux\Type\Variant\Vector
+	 * @param string $strRootNode ['Variant\Vector']
 	 * @param bool $blnIncludeHeaders [true]
 	 * @param string $strChildNode ['item']
 	 * @return string
-	 * @uses \Crux\Type\VariantList::toVector()
+	 * @uses \Crux\Type\Variant\Vector::toVector()
 	 * @uses \Crux\Collection\Vector::toXml()
 	 */
-	public function toXml(string $strRootNode = 'variantList', bool $blnIncludeHeaders = true, string $strChildNode = 'item') : string
+	public function toXml(string $strRootNode = 'Variant\Vector', bool $blnIncludeHeaders = true, string $strChildNode = 'item') : string
 	{
 		// Convert the variant list to a vector and return the XML
 		return $this->toVector()->toXml($strRootNode, $blnIncludeHeaders, $strChildNode);
@@ -880,10 +868,10 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	/**
 	 * This method returns the data in its original type
 	 * @access public
-	 * @name \Crux\Type\VariantList ::getData()
-	 * @package \Crux\Type\VariantList
-	 * @return \Crux\Collection\Vector
-	 * @uses \Crux\Type\VariantList::getIterator()
+	 * @name \Crux\Type\Variant\Vector ::getData()
+	 * @package \Crux\Type\Variant\Vector
+	 * @return array|\Crux\Collection\Vector
+	 * @uses \Crux\Type\Variant\Vector::getIterator()
 	 * @uses \Crux\Type\IsVariant::getData()
 	 * @uses \Crux\Collection\Vector::fromArray()
 	 * @uses array_push()
@@ -899,14 +887,14 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 			array_push($arrData, $varValue->getData());
 		}
 		// Return the data
-		return (($this->mOriginalType === self::Vector) ? Collection\Vector::fromArray($arrData) : $arrData);
+		return (($this->mOriginalType === Core\Api::Vector) ? Collection\Vector::fromArray($arrData) : $arrData);
 	}
 
 	/**
 	 * This method returns the original type name from the instance
 	 * @access public
-	 * @name \Crux\Type\VariantList::getOriginalType()
-	 * @package \Crux\Type\VariantList
+	 * @name \Crux\Type\Variant\Vector::getOriginalType()
+	 * @package \Crux\Type\Variant\Vector
 	 * @return string
 	 */
 	public function getOriginalType() : string
@@ -916,5 +904,5 @@ class VariantList extends Collection\Vector implements IsVariant, \JsonSerializa
 	}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-} /// End Crux\Type\VariantList Class Definition /////////////////////////////////////////////////////////////////////
+} /// End Crux\Type\Variant\Vector Class Definition //////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

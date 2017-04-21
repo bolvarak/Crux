@@ -124,7 +124,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @access protected
 	 * @name \Crux\Fluent\Sql\Record::$mContainer
 	 * @package \Crux\Fluent\Sql\Record
-	 * @var \Crux\Type\VariantMap
+	 * @var \Crux\Type\Map
 	 */
 	protected $mContainer;
 
@@ -223,12 +223,12 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @param string $strSchema ['']
 	 * @param string $strPrimaryKey ['']
 	 * @param string $strWhere ['']
-	 * @uses \Crux\Type\VariantMap::__construct()
+	 * @uses \Crux\Type\Map::__construct()
 	 */
 	public function __construct(string $strConnection, string $strTable, string $strSchema = '', string $strPrimaryKey = '', string $strWhere = '')
 	{
 		// Initialize the container
-		$this->mContainer = new Type\VariantMap();
+		$this->mContainer = new Type\Map();
 		// Set the connection name into the instance
 		$this->mConnection = $strConnection;
 		// Set the schema into the instance
@@ -279,8 +279,8 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @param bool $blnForceInsert [false]
 	 * @return string
 	 * @uses \Crux\Core\Is::empty()
-	 * @uses \Crux\Type\VariantMap::toKeysArray()
-	 * @uses \Crux\Type\VariantMap::get()
+	 * @uses \Crux\Type\Map::toKeysArray()
+	 * @uses \Crux\Type\Map::get()
 	 * @uses \Crux\Type\Variant::getData()
 	 * @uses \Crux\Provider\Sql\Engine::getConnection()
 	 * @uses \Crux\Provider\Sql\Engine::queryf()
@@ -371,7 +371,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @uses \Crux\Core\Cache::get()
 	 * @uses \Crux\Core\Cache::set()
 	 * @uses \Crux\Collection\Map::toArray()
-	 * @uses \Crux\Type\VariantMap::set()
+	 * @uses \Crux\Type\Map::set()
 	 * @uses sprintf()
 	 * @uses preg_match()
 	 */
@@ -429,7 +429,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @package \Crux\Fluent\Sql\Record
 	 * @return bool
 	 * @uses \Crux\Core\Is::empty()
-	 * @uses \Crux\Type\VariantMap::get()
+	 * @uses \Crux\Type\Map::get()
 	 * @uses \Crux\Type\Variant::isEmpty()
 	 */
 	protected function primaryKeyIsEmpty() : bool
@@ -447,7 +447,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @param string $strSourceColumn
 	 * @return string
 	 * @uses \Crux\Core\Is::empty()
-	 * @uses \Crux\Type\VariantMap::toKeysArray()
+	 * @uses \Crux\Type\Map::toKeysArray()
 	 * @uses \Crux\Provider\Sql\Engine::getConnection()
 	 * @uses \Crux\Provider\Sql\Engine::queryf()
 	 * @uses array_push()
@@ -534,8 +534,8 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @package \Crux\Fluent\Sql\Record
 	 * @return string
 	 * @uses \Crux\Core\Is::empty()
-	 * @uses \Crux\Type\VariantMap::toKeysArray()
-	 * @uses \Crux\Type\VariantMap::get()
+	 * @uses \Crux\Type\Map::toKeysArray()
+	 * @uses \Crux\Type\Map::get()
 	 * @uses \Crux\Type\Variant::getData()
 	 * @uses \Crux\Provider\Sql\Engine::getConnection()
 	 * @uses \Crux\Provider\Sql\Engine::queryf()
@@ -626,9 +626,9 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @param mixed $mixValue [\Crux::NoValue]
 	 * @return \Crux\Type\Variant
 	 * @throws \Crux\Core\Exception\Fluent\Sql\Record
-	 * @uses \Crux\Type\VariantMap::containsKey()
-	 * @uses \Crux\Type\VariantMap::get()
-	 * @uses \Crux\Type\VariantMap::set()
+	 * @uses \Crux\Type\Map::containsKey()
+	 * @uses \Crux\Type\Map::get()
+	 * @uses \Crux\Type\Map::set()
 	 * @uses \Crux\Core\Exception\Fluent\Sql\Record::__construct()
 	 * @uses sprintf()
 	 */
@@ -696,8 +696,8 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @name \Crux\Fluent\Sql\Record::empty()
 	 * @package \Crux\Fluent\Sql\Record
 	 * @return \Crux\Fluent\Sql\Record $this
-	 * @uses \Crux\Type\VariantMap::toKeysArray()
-	 * @uses \Crux\Type\VariantMap::set()
+	 * @uses \Crux\Type\Map::toKeysArray()
+	 * @uses \Crux\Type\Map::set()
 	 */
 	public function empty() : Record
 	{
@@ -743,7 +743,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @uses \Crux\Fluent\Sql\Collection::fetchIntoModel()
 	 * @uses \Crux\Fluent\Sql\Record::schemaName()
 	 * @uses \Crux\Fluent\Sql\Record::tableName()
-	 * @uses \Crux\Type\VariantMap::get()
+	 * @uses \Crux\Type\Map::get()
 	 * @uses \Crux\Type\Variant::getData()
 	 */
 	public function hasMany(Record $modContainer, string $strTargetColumn = '', string $strSourceColumn = '') : Record
@@ -795,7 +795,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @uses \Crux\Core\Is::empty()
 	 * @uses \Crux\Fluent\Sql\Record::tableName()
 	 * @uses \Crux\Fluent\Sql\Record::load()
-	 * @uses \Crux\Type\VariantMap::get()
+	 * @uses \Crux\Type\Map::get()
 	 * @uses \Crux\Type\Variant::getData()
 	 */
 	public function hasOne(Record $modContainer, string $strTargetColumn = '', string $strSourceColumn = '') : Record
@@ -827,7 +827,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @name \Crux\Fluent\Sql\Record::isEmpty()
 	 * @package \Crux\Fluent\Sql\Record
 	 * @return bool
-	 * @uses \Crux\Type\VariantMap::isEmpty()
+	 * @uses \Crux\Type\Map::isEmpty()
 	 * @uses \Crux\Fluent\Sql\Record::primaryKeyIsEmpty()
 	 */
 	public function isEmpty() : bool
@@ -853,7 +853,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @uses \Crux\Provider\Sql\Engine::executeQuery()
 	 * @uses \Crux\Provider\Sql\Statement::rowCount()
 	 * @uses \Crux\Provider\Sql\Statement::toArray()
-	 * @uses \Crux\Type\VariantMap::set()
+	 * @uses \Crux\Type\Map::set()
 	 * @uses \Crux\Core\Exception\Fluent\Sql\Record::__construct()
 	 * @uses \PDOException::getMessage()
 	 * @uses \PDOException::getCode()
@@ -1090,7 +1090,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @uses \Crux\Provider\Sql\Engine::getConnection()
 	 * @uses \Crux\Provider\Sql\Engine::executeQuery()
 	 * @uses \Crux\Provider\Sql\Engine::lastId()
-	 * @uses \Crux\Type\VariantMap::set()
+	 * @uses \Crux\Type\Map::set()
 	 * @uses \Crux\Core\Exception\Fluent\Sql\Record::__construct()
 	 * @uses \PDOException::getMessage()
 	 * @uses \PDOException::getCode()
@@ -1239,7 +1239,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @package \Crux\Fluent\Sql\Record
 	 * @param bool $blnPrettyPrint [false]
 	 * @return string
-	 * @uses \Crux\Type\VariantMap::toJson()
+	 * @uses \Crux\Type\Map::toJson()
 	 */
 	public function toJson(bool $blnPrettyPrint = false) : string
 	{
@@ -1257,7 +1257,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @param string $strChildListNode ['item']
 	 * @param bool $blnPrettyPrint [false]
 	 * @return string
-	 * @uses \Crux\Type\VariantMap::toXml()
+	 * @uses \Crux\Type\Map::toXml()
 	 */
 	public function toXml(bool $blnIncludeHeaders = true, string $strRootNode = 'payload', string $strChildListNode = 'item', bool $blnPrettyPrint = false) : string
 	{
@@ -1303,7 +1303,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @name \Crux\Fluent\Sql\Record::toCollection()
 	 * @package \Crux\Fluent\Sql\Record
 	 * @return \Crux\Collection\Map
-	 * @uses \Crux\Type\VariantMap::toMap()
+	 * @uses \Crux\Type\Map::toMap()
 	 */
 	public function toCollection() : Collection\Map
 	{
@@ -1329,7 +1329,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @name \Crux\Fluent\Sql\Record::toObject()
 	 * @package \Crux\Fluent\Sql\Record
 	 * @return \stdClass
-	 * @uses \Crux\Type\VariantMap::toObject()
+	 * @uses \Crux\Type\Map::toObject()
 	 */
 	public function toObject() : \stdClass
 	{
@@ -1354,9 +1354,9 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @access public
 	 * @name \Crux\Fluent\Sql\Record::toVariant()
 	 * @package \Crux\Fluent\Sql\Record
-	 * @return \Crux\Type\VariantMap
+	 * @return \Crux\Type\Map
 	 */
-	public function toVariant() : Type\VariantMap
+	public function toVariant() : Type\Map
 	{
 		// Localize the container
 		$mapRecord = clone $this->mContainer;
