@@ -34,7 +34,7 @@ class Collection implements Serialize\Able, \JsonSerializable
 	 * @package \Crux\Fluent\Sql\Collection
 	 * @param string $strMethod
 	 * @param array $arrArguments
-	 * @return \Crux\Fluent\Sql\Model|\Crux\Provider\Sql\Record
+	 * @return \Crux\Fluent\Sql\Record|\Crux\Provider\Sql\Record
 	 * @throws \Crux\Core\Exception\Fluent\Sql\Collection
 	 * @uses \Crux\Fluent\Sql\Collection::model()
 	 * @uses \Crux\Fluent\Sql\Collection::record()
@@ -48,7 +48,7 @@ class Collection implements Serialize\Able, \JsonSerializable
 		// Check the method
 		if (preg_match('/get([0-9]+)AsModel/i', $strMethod, $arrMatches)) {
 			// Return the model
-			return $this->model(intval($arrMatches[1]));
+			return $this->record(intval($arrMatches[1]));
 		} elseif (preg_match('/get([0-9]+)AsRecord/i', $strMethod, $arrMatches)) {
 			// Return the record
 			return $this->record(intval($arrMatches[1]));
@@ -255,7 +255,7 @@ class Collection implements Serialize\Able, \JsonSerializable
 	public function toJson(bool $blnPrettyPrint = false) : string
 	{
 		// Return the JSON from the vector
-		$this->mData->toJson();
+		return $this->mData->toJson();
 	}
 
 	/**
@@ -287,16 +287,16 @@ class Collection implements Serialize\Able, \JsonSerializable
 	 * @access public
 	 * @name \Crux\Fluent\Sql\Collection::toVariant()
 	 * @package \Crux\Fluent\Sql\Collection
-	 * @return \Crux\Type\VariantList
+	 * @return \Crux\Type\Variant\Vector
 	 * @uses \Crux\Type\VariantList::__construct()
 	 * @uses \Crux\Type\VariantList::add()
 	 * @uses \Crux\Fluent\Sql\Collection::records()
 	 * @uses \Crux\Collection\Vector::getIterator()
 	 */
-	public function toVariant() : Type\VariantList
+	public function toVariant() : Type\Variant\Vector
 	{
 		// Define our container
-		$lstContainer = new Type\VariantList();
+		$lstContainer = new Type\Variant\Vector();
 		// Iterate over the records
 		foreach ($this->records()->getIterator() as $modRecord) {
 			// Add the record to the container
@@ -486,6 +486,8 @@ class Collection implements Serialize\Able, \JsonSerializable
 			// Set the limit clause
 			$this->mLimit = $intCount;
 		}
+		// We're done, return the instance
+		return $this;
 	}
 
 	/**
@@ -517,7 +519,7 @@ class Collection implements Serialize\Able, \JsonSerializable
 	 * @name \Crux\Fluent\Sql\Collection::where()
 	 * @package \Crux\Fluent\Sql\Collection
 	 * @param string $strClause
-	 * @param array<int, mixed> ...$arrReplacements
+	 * @param array ...$arrReplacements
 	 * @return \Crux\Fluent\Sql\Collection $this
 	 * @uses \Crux\Provider\Sql\Engine::getConnection()
 	 * @uses \Crux\Provider\Sql\Engine::queryf()

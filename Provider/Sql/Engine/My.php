@@ -124,22 +124,22 @@ class My extends Sql\Engine
 		// Define our description container
 		$arrDescription = [];
 		// Iterate over the result set
-		$pdoStatement->iterate(function(Record $clsRow, int $intRow) use (&$arrDescription) {
+		$pdoStatement->iterate(function(Sql\Record $clsRow) use (&$arrDescription) {
 			// Define our column container
 			$arrColumn = [];
 			// Split the type into its pieces
-			preg_match('/([a-zA-Z]+)(\(([0-9]*)\))?/i', $clsRow->getType()->toString(), $arrType);
+			preg_match('/([a-zA-Z]+)(\(([0-9]*)\))?/i', $clsRow->column('type')->toString(), $arrType);
 			// Set the type into the column
 			array_push($arrColumn, $arrType[1]);
 			// Set the length into the column
 			array_push($arrColumn, ($arrColumn[3] ?? ''));
 			// Check for a primary key
-			if ($clsRow->getKey()->toLower()->toString() === 'pri') {
+			if ($clsRow->column('key')->toLower()->toString() === 'pri') {
 				// Append the primary key identifier
 				array_push($arrColumn, self::PRIMARY_KEY_IDENTIFIER);
 			}
 			// Add the column to the container
-			$arrDescription[$clsRow->getField()->toString()] = $arrColumn;
+			$arrDescription[$clsRow->column('field')->toString()] = $arrColumn;
 		});
 		// We're done, return the description
 		return $arrDescription;

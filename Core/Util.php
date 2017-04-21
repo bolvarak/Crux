@@ -31,7 +31,7 @@ class Util
 	 * @return array
 	 * @static
 	 */
-	public static function alphabetArray(bool $blnAllCaps = false) : array
+	public static function alphabetArray(bool $blnAllCaps = false): array
 	{
 		// Check for all caps
 		if ($blnAllCaps) {
@@ -53,7 +53,7 @@ class Util
 	 * @return bool
 	 * @static
 	 */
-	public static function arrayKeySearch(string $strNeedle, array $arrHaystack) : bool
+	public static function arrayKeySearch(string $strNeedle, array $arrHaystack): bool
 	{
 		// Make sure we have an associative array
 		if (!Is::associativeArray($arrHaystack)) {
@@ -83,7 +83,7 @@ class Util
 	 * @uses explode()
 	 * @uses floatval()
 	 */
-	public static function makeSeed() : int
+	public static function makeSeed(): int
 	{
 		// Create parts
 		$arrParts = explode(' ', microtime());
@@ -101,7 +101,7 @@ class Util
 	 * @static
 	 * @uses \Crux\Collection\Map::__construct()
 	 */
-	public static function mapFactory($mixSource = []) : Collection\Map
+	public static function mapFactory($mixSource = []): Collection\Map
 	{
 		// Check for an array
 		if (Is::associativeArray($mixSource)) {
@@ -154,7 +154,7 @@ class Util
 	 * @uses time()
 	 * @uses date()
 	 */
-	public static function mysqlDate($mixTimeStamp = null) : string
+	public static function mysqlDate($mixTimeStamp = null): string
 	{
 		// Check for a timestamp
 		if (is_null($mixTimeStamp) === false) {
@@ -182,7 +182,7 @@ class Util
 	 * @uses time()
 	 * @uses date()
 	 */
-	public static function mysqlTimeStamp($mixTimeStamp = null) : string
+	public static function mysqlTimeStamp($mixTimeStamp = null): string
 	{
 		// Check for a timestamp
 		if (is_null($mixTimeStamp) === false) {
@@ -212,7 +212,7 @@ class Util
 	 * @uses \DateTime::setTimestamp()
 	 * @uses \DateTime::format()
 	 */
-	public static function pgsqlTimeStamp($mixTimeStamp = null) : string
+	public static function pgsqlTimeStamp($mixTimeStamp = null): string
 	{
 		// Check for a timestamp
 		if (is_null($mixTimeStamp) === false) {
@@ -242,7 +242,7 @@ class Util
 	 * @uses mt_rand()
 	 * @uses mt_getrandmax()
 	 */
-	public static function randomInteger(int $intMinimum = 0) : int
+	public static function randomInteger(int $intMinimum = 0): int
 	{
 		// Seed the random number generator
 		self::randomSeeder();
@@ -281,7 +281,7 @@ class Util
 	 * @static
 	 * @uses mb_convert_case()
 	 */
-	public static function titleCase(string $strSource) : string
+	public static function titleCase(string $strSource): string
 	{
 		// Return the title case version of the string
 		return mb_convert_case($strSource, MB_CASE_TITLE);
@@ -297,7 +297,7 @@ class Util
 	 * @static
 	 * @uses \Crux\Collection\Vector::__construct()
 	 */
-	public static function vectorFactory($mixSource = null) : Collection\Vector
+	public static function vectorFactory($mixSource = null): Collection\Vector
 	{
 		// Check the source type
 		if (Is::sequentialArray($mixSource)) {
@@ -306,7 +306,7 @@ class Util
 		} elseif (Is::vector($mixSource)) {
 			// Return the source
 			return $mixSource;
-		} elseif (Is::variantList($mixSource)) {
+		} elseif (Is::variantVector($mixSource)) {
 			// Return the new vector
 			return Collection\Vector::fromArray($mixSource->toArray());
 		} else {

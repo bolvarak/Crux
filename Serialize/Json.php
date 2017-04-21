@@ -312,7 +312,7 @@ class Json extends Es
 	 * @access public
 	 * @name \Crux\Serialize\Json::toVariant()
 	 * @package \Crux\Serialize\Json
-	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\Map
+	 * @return \Crux\Type\Variant|\Crux\Type\Variant\Scalar|\Crux\Type\Variant\Vector|\Crux\Type\Variant\Map
 	 * @uses \Crux\Core\Is::associativeArray()
 	 * @uses \Crux\Core\Is::sequentialArray()
 	 * @uses \Crux\Type\Variant::Factory()
@@ -324,10 +324,10 @@ class Json extends Es
 		// Check the data type
 		if (Core\Is::associativeArray($this->mOutput)) {
 			// Return the VariantMap
-			return Type\Map::fromArray($this->mOutput);
+			return Type\Variant\Map::fromArray($this->mOutput);
 		} else if (Core\Is::sequentialArray($this->mOutput)) {
 			// Return the VariantList
-			return Type\VariantList::fromArray($this->mOutput);
+			return Type\Variant\Vector::fromArray($this->mOutput);
 		} else {
 			// Return the Variant
 			return Type\Variant::Factory($this->mOutput);

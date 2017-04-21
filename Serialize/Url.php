@@ -136,7 +136,7 @@ class Url extends Es
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * This method deserializes a URL query string
+	 * This method de-serializes a URL query string
 	 * @access public
 	 * @name \Crux\Serialize\Url::deserialize()
 	 * @package \Crux\Serialize\Url
@@ -184,13 +184,13 @@ class Url extends Es
 		if (Core\Is::array($mixSource)) {
 			// Return the serialization
 			return http_build_query($mixSource);
-		} elseif (Core\Is::variantList($mixSource)) {
+		} elseif (Core\Is::variantVector($mixSource)) {
 			// Return the serialization
 			return http_build_query($mixSource->toArray());
 		} elseif (Core\Is::variantMap($mixSource)) {
 			// Return the serialization
 			return http_build_query($mixSource->toArray());
-		} elseif (Core\Is::variant($mixSource)) {
+		} elseif (Core\Is::variantScalar($mixSource)) {
 			// Return the serialization
 			return http_build_query(['data' => $mixSource->getData()]);
 		} elseif (Core\Is::vector($mixSource)) {
@@ -294,7 +294,7 @@ class Url extends Es
 	 * @access public
 	 * @name \Crux\Serialize\Url::toVariant()
 	 * @package \Crux\Serialize\Url
-	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\Map
+	 * @return \Crux\Type\Variant|\Crux\Type\Variant\Scalar|\Crux\Type\Variant\Vector|\Crux\Type\Variant\Map
 	 * @uses \Crux\Type\Variant::Factory()
 	 */
 	public function toVariant()

@@ -94,7 +94,7 @@ class Postgre extends Sql\Engine
 		// Check the type
 		if (!Core\Is::empty($mixTimeStamp) && !Core\Is::string($mixTimeStamp) && !Core\Is::integer($mixTimeStamp) && !Core\Is::float($mixTimeStamp)) {
 			// We're done, throw the exception
-			throw new Core\Exception\Provider\Sql\Engine\Postgre('Timestamp must either be the string representation of time, a UNIX timestamp or a microtime floating point');
+			throw new Core\Exception\Provider\Sql\Engine\Postgre('Timestamp must either be the string representation of time, a UNIX timestamp or a micro-time floating point');
 		}
 		// Check for an empty timestamp
 		if (Core\Is::empty($mixTimeStamp)) {
@@ -155,14 +155,14 @@ class Postgre extends Sql\Engine
 		// Define the description container
 		$arrDescription = [];
 		// Iterate over the rows
-		$pdoStatement->iterate(function(Record $pdoRecord, int $intRow) use (&$arrDescription) {
+		$pdoStatement->iterate(function(Sql\Record $pdoRecord) use (&$arrDescription) {
 			// Check the description for the column
-			if (!array_key_exists($pdoRecord->getColumnName()->toString(), $arrDescription)) {
+			if (!array_key_exists($pdoRecord->column('columnName')->toString(), $arrDescription)) {
 				// Add the column to the description container
-				$arrDescription[$pdoRecord->getColumnName()->toString()] = [
-					$pdoRecord->getDataType()->toString(),
-					$pdoRecord->getCharacterMaximumLength()->toInt(),
-					($pdoRecord->getConstraintType()->toLower()->matches('primary key') ? self::PRIMARY_KEY_IDENTIFIER : null)
+				$arrDescription[$pdoRecord->column('columnName')->toString()] = [
+					$pdoRecord->column('dataType')->toString(),
+					$pdoRecord->column('characterMaximumLength')->toInt(),
+					($pdoRecord->column('constraintType')->toLower()->matches('primary key') ? self::PRIMARY_KEY_IDENTIFIER : null)
 				];
 			}
 		});

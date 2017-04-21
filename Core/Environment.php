@@ -38,7 +38,7 @@ class Environment
 	 * @uses substr_replace()
 	 * @uses isset()
 	 */
-	public static function __callStatic(string $strMethod, array $arrArguments) : string
+	public static function __callStatic(string $strMethod, array $arrArguments): string
 	{
 		// Check the method
 		if (($strEnvironment = self::exists($strMethod, true)) !== false) { // Check for a direct environment call
@@ -94,11 +94,11 @@ class Environment
 		self::$mEnvironments = new Collection\Map();
 		// Create our defaults
 		self::$mEnvironments
-			->set('devel',      'Development')
+			->set('devel', 'Development')
 			->set('production', 'Production')
-			->set('sandbox',    'Sandbox')
-			->set('staging',    'Staging')
-			->set('test',       'Test');
+			->set('sandbox', 'Sandbox')
+			->set('staging', 'Staging')
+			->set('test', 'Test');
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,7 +163,7 @@ class Environment
 	 * @static
 	 * @uses \Crux\Collection\Map::get()
 	 */
-	public static function get(string $strEnvironment) : string
+	public static function get(string $strEnvironment): string
 	{
 		// Return the description
 		return self::$mEnvironments->get($strEnvironment);

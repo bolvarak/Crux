@@ -101,7 +101,7 @@ abstract class Endpoint
 	 * @name \Crux\Request\Endpoint::block()
 	 * @package \Crux\Request\Endpoint
 	 * @param string $strName
-	 * @param array<string, mixed> $arrScope [array()]
+	 * @param array $arrScope [array()]
 	 * @return void
 	 * @throws \Crux\Core\Exception\Request\Endpoint
 	 * @uses \Crux\Request\Endpoint::blockExists()
@@ -206,7 +206,7 @@ abstract class Endpoint
 	 * @name \Crux\Request\Endpoint::blockToString()
 	 * @package \Crux\Request\Endpoint
 	 * @param string $strName
-	 * @param array<string, mixed> $arrScope [array()]
+	 * @param array $arrScope [array()]
 	 * @return string
 	 * @uses \Crux\Request\Endpoint::block()
 	 * @uses ob_start()

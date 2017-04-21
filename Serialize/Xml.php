@@ -182,13 +182,13 @@ class Xml extends Es
 		} elseif (Core\Is::vector($mixData)) {
 			// Append to the XML string
 			$this->mXmlBuild .= $mixData->toXml($strNode, false, $strNode);
-		} elseif (Core\Is::variantList($mixData)) {
+		} elseif (Core\Is::variantVector($mixData)) {
 			// Append to the XML string
 			$this->mXmlBuild .= $mixData->toXml($strNode, false);
 		} elseif (Core\Is::variantMap($mixData)) {
 			// Append to the XML string
 			$this->mXmlBuild .= $mixData->toXml($strNode, false, $strNode);
-		} elseif (Core\Is::variant($mixData)) {
+		} elseif (Core\Is::variantScalar($mixData)) {
 			// Encode the Variant
 			$this->processNode($mixData->getData(), $strNode);
 		} elseif (Core\Is::associativeArray($mixData)) {
@@ -212,7 +212,7 @@ class Xml extends Es
 	 * This method serializes a PHP associative array into XML
 	 * @access protected
 	 * @name \Crux\Serialize\Xml::serializeAssociativeArray()
-	 * @pacakge \Crux\Serialize\Xml
+	 * @package \Crux\Serialize\Xml
 	 * @param array<string, mixed> $arrData
 	 * @param string $strNode
 	 * @return \Crux\Serialize\Xml $this
@@ -469,7 +469,7 @@ class Xml extends Es
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * This method deserializes an XML string
+	 * This method de-serializes an XML string
 	 * @access public
 	 * @name \Crux\Serialize\Xml::deserialize()
 	 * @package \Crux\Serialize\Xml
@@ -647,7 +647,7 @@ class Xml extends Es
 	 * @access public
 	 * @name \Crux\Serialize\Xml::toVariant()
 	 * @package \Crux\Serialize\Xml
-	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\Map
+	 * @return \Crux\Type\Variant|\Crux\Type\Variant\Scalar|\Crux\Type\Variant\Vector|\Crux\Type\Variant\Map
 	 * @uses \Crux\Core\Is::associativeArray()
 	 * @uses \Crux\Core\Is::sequentialArray()
 	 * @uses \Crux\Type\Variant::Factory()
@@ -659,10 +659,10 @@ class Xml extends Es
 		// Check the data type
 		if (Core\Is::associativeArray($this->mOutput)) {
 			// Return the new variant map
-			return Type\Map::fromArray($this->mOutput);
+			return Type\Variant\Map::fromArray($this->mOutput);
 		} elseif (Core\Is::sequentialArray($this->mOutput)) {
 			// Return the new variant list
-			return Type\VariantList::fromArray($this->mOutput);
+			return Type\Variant\Vector::fromArray($this->mOutput);
 		} else {
 			// Return the new variant scalar
 			return Type\Variant::Factory($this->mOutput);

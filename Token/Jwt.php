@@ -480,7 +480,7 @@ class Jwt
 	 * @name \Crux\Token\Jwt::validateHeader()
 	 * @package \Crux\Token\Jwt
 	 * @param string $strAlgorithm
-	 * @param array<string, mixed> $arrHeader
+	 * @param array $arrHeader
 	 * @return void
 	 * @throws \Crux\Core\Exception\Token\Jwt
 	 * @uses \Crux\Core\Exception\Token\Jwt::__construct()

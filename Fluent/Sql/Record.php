@@ -33,7 +33,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @name \Crux\Fluent\Sql\Record::__call()
 	 * @package \Crux\Fluent\Sql\Record
 	 * @param string $strMethod
-	 * @param array<int, mixed> $arrArguments
+	 * @param array $arrArguments
 	 * @return \Crux\Type\Variant|\Crux\Fluent\Sql\Record|\Crux\Fluent\Sql\Collection
 	 * @throws \Crux\Core\Exception\Fluent\Sql\Record
 	 * @uses \Crux\Fluent\Sql\Record::__get()
@@ -79,7 +79,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @name \Crux\Fluent\Sql\Record::__get()
 	 * @package \Crux\Fluent\Sql\Record
 	 * @param string $strProperty
-	 * @return \Crux\Type\Variant
+	 * @return \Crux\Type\Variant\Scalar
 	 * @uses \Crux\Fluent\Sql\Record::column()
 	 */
 	public function __get(string $strProperty)
@@ -124,7 +124,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @access protected
 	 * @name \Crux\Fluent\Sql\Record::$mContainer
 	 * @package \Crux\Fluent\Sql\Record
-	 * @var \Crux\Type\Map
+	 * @var \Crux\Type\Variant\Map
 	 */
 	protected $mContainer;
 
@@ -228,7 +228,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	public function __construct(string $strConnection, string $strTable, string $strSchema = '', string $strPrimaryKey = '', string $strWhere = '')
 	{
 		// Initialize the container
-		$this->mContainer = new Type\Map();
+		$this->mContainer = new Type\Variant\Map();
 		// Set the connection name into the instance
 		$this->mConnection = $strConnection;
 		// Set the schema into the instance
@@ -624,7 +624,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @package
 	 * @param string $strColumn
 	 * @param mixed $mixValue [\Crux::NoValue]
-	 * @return \Crux\Type\Variant
+	 * @return \Crux\Type\Variant\Scalar
 	 * @throws \Crux\Core\Exception\Fluent\Sql\Record
 	 * @uses \Crux\Type\Map::containsKey()
 	 * @uses \Crux\Type\Map::get()
@@ -632,7 +632,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @uses \Crux\Core\Exception\Fluent\Sql\Record::__construct()
 	 * @uses sprintf()
 	 */
-	public function column(string $strColumn, $mixValue = \Crux::NoValue) : Type\Variant
+	public function column(string $strColumn, $mixValue = \Crux::NoValue) : Type\Variant\Scalar
 	{
 		// Make sure the column exists
 		if (($strRealColumn = $this->mContainer->key($strColumn)) === null) {
@@ -1211,7 +1211,7 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @name \Crux\Fluent\Sql\Record::where()
 	 * @package \Crux\Fluent\Sql\Record
 	 * @param string $strClause
-	 * @param array<int, mixed> ...$arrReplacements
+	 * @param array ...$arrReplacements
 	 * @return \Crux\Fluent\Sql\Record $this
 	 * @uses \Crux\Provider\Sql\Engine::getConnection()
 	 * @uses \Crux\Provider\Sql\Engine::queryf()
@@ -1354,9 +1354,9 @@ abstract class Record implements Serialize\Able, \JsonSerializable
 	 * @access public
 	 * @name \Crux\Fluent\Sql\Record::toVariant()
 	 * @package \Crux\Fluent\Sql\Record
-	 * @return \Crux\Type\Map
+	 * @return \Crux\Type\Variant\Map
 	 */
-	public function toVariant() : Type\Map
+	public function toVariant() : Type\Variant\Map
 	{
 		// Localize the container
 		$mapRecord = clone $this->mContainer;

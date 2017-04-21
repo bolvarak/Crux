@@ -31,7 +31,7 @@ class Record implements Serialize\Able
 	 * @name \Crux\Provider\Sql\Record::__call()
 	 * @package \Crux\Provider\Sql\Record
 	 * @param string $strMethod
-	 * @param array<int, mixed> $arrArguments
+	 * @param array $arrArguments
 	 * @return mixed
 	 * @throws \Crux\Core\Exception\Provider\Sql\Record
 	 * @uses \Crux\Provider\Sql\Record::__get()
@@ -64,7 +64,7 @@ class Record implements Serialize\Able
 	 * @name \Crux\Provider\Sql\Record::__get()
 	 * @package \Crux\Provider\Sql\Record
 	 * @param string $strProperty
-	 * @return \Crux\Type\Variant
+	 * @return \Crux\Type\Variant\Scalar
 	 * @throws \Crux\Core\Exception\Provider\Sql\Record
 	 * @uses \Crux\Type\Map::getIterator()
 	 * @uses \Crux\Core\Is::encodedHtml()
@@ -74,7 +74,7 @@ class Record implements Serialize\Able
 	 * @uses htmlspecialchars_decode()
 	 * @uses sprintf()
 	 */
-	public function __get(string $strProperty)
+	public function __get(string $strProperty) : Type\Variant\Scalar
 	{
 		// Convert the key
 		$strKey = strtolower(str_replace(['-', '_'], ['', ''], $strProperty));
@@ -126,7 +126,7 @@ class Record implements Serialize\Able
 	 * @access protected
 	 * @name \Crux\Provider\Sql\Record::$mContainer
 	 * @package \Crux\Provider\Sql\Record
-	 * @var \Crux\Type\Map
+	 * @var \Crux\Type\Variant\Map
 	 */
 	protected $mContainer;
 
@@ -155,7 +155,7 @@ class Record implements Serialize\Able
 		// Set the statement into the instance
 		$this->mStatement = $pdoStatement;
 		// Initialize the data container
-		$this->mContainer = new Type\Map();
+		$this->mContainer = new Type\Variant\Map();
 	}
 
 	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,7 +168,7 @@ class Record implements Serialize\Able
 	 * @name \Crux\Provider\Sql\Record::fromArray()
 	 * @package \Crux\Provider\Sql\Record
 	 * @param \Crux\Provider\Sql\Statement $pdoStatement
-	 * @param array<string, mixed> $arrSource
+	 * @param array $arrSource
 	 * @return \Crux\Provider\Sql\Record
 	 * @static
 	 * @uses \Crux\Provider\Sql\Record::__construct()
@@ -197,14 +197,14 @@ class Record implements Serialize\Able
 	 * @name \Crux\Provider\Sql\Record::column()
 	 * @package \Crux\Provider\Sql\Record
 	 * @param string $strColumn
-	 * @return \Crux\Type\Variant
+	 * @return \Crux\Type\Variant\Scalar
 	 * @throws \Crux\Core\Exception\Provider\Sql\Record
 	 * @uses \Crux\Type\Map::containsKey()
 	 * @uses \Crux\Type\Map::get()
 	 * @uses \Crux\Core\Exception\Provider\Sql\Record::__construct()
 	 * @uses sprintf()
 	 */
-	public function column(string $strColumn) : Type\Variant
+	public function column(string $strColumn) : Type\Variant\Scalar
 	{
 		// Check for the key
 		if (!$this->mContainer->containsKey($strColumn)) {
@@ -303,9 +303,9 @@ class Record implements Serialize\Able
 	 * @access public
 	 * @name \Crux\Provider\Sql\Record::toVariant()
 	 * @package \Crux\Provider\Sql\Record
-	 * @return \Crux\Type\Map
+	 * @return \Crux\Type\Variant\Map
 	 */
-	public function toVariant() : Type\Map
+	public function toVariant() : Type\Variant\Map
 	{
 		// Return the column container
 		return $this->mContainer;

@@ -330,7 +330,7 @@ class Is
 	 * @name \Crux\Core\Is::in()
 	 * @package \Crux\Core\Is
 	 * @param mixed $mixTest
-	 * @param array<int, mixed> $arrHaystack
+	 * @param array $arrHaystack
 	 * @param bool $blnStrict [true]
 	 * @return bool
 	 * @static

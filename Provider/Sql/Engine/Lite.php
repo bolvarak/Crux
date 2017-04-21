@@ -120,20 +120,20 @@ final class Lite extends Sql\Engine
 		// Create our storage array
 		$arrDescription = [];
 		// Iterate over the data
-		$pdoStatement->iterate(function(Record $clsRow, int $intRow) use (&$arrDescription) {
+		$pdoStatement->iterate(function(Sql\Record $clsRow) use (&$arrDescription) {
 			// Define our column placeholder
 			$arrColumn = [];
 			// Add the type
-			array_push($arrColumn, $clsRow->getType()->toString());
+			array_push($arrColumn, $clsRow->column('type')->toString());
 			// Add the size
 			array_push($arrColumn, '255');
 			// Check for a primary key
-			if ($clsRow->getPk()->toInt() === 1) {
+			if ($clsRow->column('pk')->toInt() === 1) {
 				// Append the primary key identifier
 				array_push($arrColumn, self::PRIMARY_KEY_IDENTIFIER);
 			}
 			// Add the column to the description
-			$arrDescription[$clsRow->getName()->toString()] = $arrColumn;
+			$arrDescription[$clsRow->column('name')->toString()] = $arrColumn;
 		});
 		// We're done, return the column description
 		return $arrDescription;

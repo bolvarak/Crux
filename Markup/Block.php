@@ -62,7 +62,7 @@ class Block
 	 * @name \Crux\Markup\Block::__constructor()
 	 * @package \Crux\Markup\Block
 	 * @param string $strContentBlock
-	 * @param array<string, mixed> $arrValues [null]
+	 * @param array $arrValues [null]
 	 * @uses \Crux\Markup\Block::contentBlock()
 	 * @uses \Crux\Markup\Block::layoutBlock()
 	 * @uses \Crux\Markup\Block::values()

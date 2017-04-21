@@ -1025,6 +1025,11 @@ class Vector extends \ArrayObject implements \JsonSerializable
 	 * @name \Crux\Collection\Vector::toArray()
 	 * @package Crux\Collection\Vector
 	 * @return array
+	 * @uses \Crux\Core\Is::map()
+	 * @uses \Crux\Core\Is::vector()
+	 * @uses \Crux\Core\Is::variantScalar()
+	 * @uses \Crux\Core\Is::variantMap()
+	 * @uses \Crux\Core\Is::variantVector()
 	 * @uses \Crux\Collection\Map::toArray()
 	 * @uses \Crux\Collection\Vector::toArray()
 	 * @uses array_push()
@@ -1036,19 +1041,19 @@ class Vector extends \ArrayObject implements \JsonSerializable
 		// Iterate over the instance
 		foreach ($this->getIterator() as $mixValue) {
 			// Check the value
-			if ($mixValue instanceof Map) {
+			if (Core\Is::map($mixValue)) {
 				// Add the value to the container
 				array_push($arrVector, $mixValue->toArray());
-			} elseif ($mixValue instanceof Vector) {
+			} elseif (Core\Is::vector($mixValue)) {
 				// Add the value to the container
 				array_push($arrVector, $mixValue->toArray());
-			} elseif ($mixValue instanceof \Crux\Type\Variant) {
+			} elseif (Core\Is::variantScalar($mixValue)) {
 				// Add the value to the container
 				array_push($arrVector, $mixValue->getData());
-			} elseif ($mixValue instanceof \Crux\Type\Map) {
+			} elseif (Core\Is::variantMap($mixValue)) {
 				// Add the value to the container
 				array_push($arrVector, $mixValue->getData());
-			} elseif ($mixValue instanceof \Crux\Type\VariantList) {
+			} elseif (Core\Is::variantVector($mixValue)) {
 				// Add the value to the container
 				array_push($arrVector, $mixValue->getData());
 			} else {

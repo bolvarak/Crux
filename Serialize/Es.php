@@ -17,7 +17,7 @@ abstract class Es
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * This method is responsible for deserializing the entity into PHP data
+	 * This method is responsible for de-serializing the entity into PHP data
 	 * @access public
 	 * @name \Crux\Serialize\Es::deserialize()
 	 * @package \Crux\Serialize\Es
@@ -82,7 +82,7 @@ abstract class Es
 	 * @access public
 	 * @name \Crux\Serialize\Es::toVariant()
 	 * @package \Crux\Serialize\Es
-	 * @return \Crux\Type\Variant|\Crux\Type\VariantList|\Crux\Type\Map
+	 * @return \Crux\Type\Variant|\Crux\Type\Variant\Scalar|\Crux\Type\Variant\Vector|\Crux\Type\Variant\Map
 	 */
 	abstract public function toVariant();
 

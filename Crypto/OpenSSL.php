@@ -338,7 +338,7 @@ class OpenSSL
 		// Set a temporary placeholder for the encrypted text
 		$strCryptex = '';
 		// Try to encrypt the data
-		if (!openssl_private_encrypt($mixData, $strCryptex, self::getKey())) {
+		if (!openssl_private_encrypt($mixData, $strCryptex, $strKey)) {
 			// Throw the exception
 			throw new Core\Exception\Crypto\OpenSSL('Unable to encrypt message using public key');
 		}
